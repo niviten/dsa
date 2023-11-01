@@ -16,6 +16,9 @@ void print(LinkedList*);
 void insert(LinkedList*, int);
 void remove_element(LinkedList*, int);
 
+void insert_at_beginning(LinkedList*, int);
+void insert_at_position(LinkedList*, int, int);
+
 void init(LinkedList *list) {
     list->head = NULL;
 }
@@ -62,6 +65,45 @@ void insert(LinkedList *list, int data) {
         walk = walk->next;
     }
     walk->next = node;
+}
+
+void insert_at_beginning(LinkedList *list, int data) {
+    Node *node;
+    node = (Node*) malloc(sizeof(Node));
+    node->data = data;
+    node->next = list->head;
+    list->head = node;
+}
+
+void insert_at_position(LinkedList *list, int position, int data) {
+    Node *node;
+    Node *walk;
+    Node *temp;
+    int i;
+
+    if (position == 0) {
+        insert_at_beginning(list, data);
+        return;
+    }
+
+    i = 1;
+    walk = list->head;
+    while (i < position && walk != NULL) {
+        i = i + 1;
+        walk = walk->next;
+    }
+
+    if (walk == NULL) {
+        return;
+    }
+
+    node = (Node*) malloc(sizeof(Node));
+    node->data = data;
+    node->next = NULL;
+
+    temp = walk->next;
+    walk->next = node;
+    node->next = temp;
 }
 
 void remove_element(LinkedList *list, int data) {
