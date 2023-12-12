@@ -47,3 +47,7 @@ func (s *Stack) Peek() (int, bool) {
     }
     return s.top.data, true
 }
+
+func (s *Stack) IsEmpty() bool {
+    return s.top == nil
+}
