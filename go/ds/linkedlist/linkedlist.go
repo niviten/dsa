@@ -9,6 +9,10 @@ type Node struct {
 	next *Node
 }
 
+func (node *Node) Data() int {
+	return node.data
+}
+
 type LinkedList struct {
 	head *Node
 }
@@ -114,4 +118,23 @@ func (list *LinkedList) ReverseInplace() {
 	}
 
 	list.head = prev
+}
+
+func (list *LinkedList) HasCycle() bool {
+	if list.head == nil {
+		return false
+	}
+
+	slow := list.head
+	fast := list.head.next
+
+	for fast != nil && fast.next != nil {
+		if slow == fast {
+			return true
+		}
+		slow = slow.next
+		fast = fast.next.next
+	}
+
+	return false
 }
