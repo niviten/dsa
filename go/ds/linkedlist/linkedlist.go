@@ -4,35 +4,38 @@ import (
 	"fmt"
 )
 
-type Node struct {
-	data int
-	next *Node
+type Node[T any] struct {
+	data T
+	next *Node[T]
 }
 
-func (node *Node) Data() int {
+type NodeEquals[T any] func(T, T) bool
+
+func (node *Node[T]) Data() T {
 	return node.data
 }
 
-type LinkedList struct {
-	head *Node
+type LinkedList[T any] struct {
+	head *Node[T]
 }
 
-func NewLinkedList() *LinkedList {
-	return &LinkedList{head: nil}
+func NewLinkedList[T any]() *LinkedList[T] {
+	return &LinkedList[T]{head: nil}
 }
 
-func (list *LinkedList) Print() {
-	fmt.Print("[")
+func (list *LinkedList[T]) Print() {
+	fmt.Println("[")
 	walk := list.head
 	for walk != nil {
-		fmt.Printf("%d, ", walk.data)
+		fmt.Println(walk.data)
 		walk = walk.next
 	}
 	fmt.Println("]")
+	fmt.Println("___")
 }
 
-func (list *LinkedList) Insert(data int) {
-	newNode := &Node{data: data, next: nil}
+func (list *LinkedList[T]) Insert(data T) {
+	newNode := &Node[T]{data: data, next: nil}
 	if list.head == nil {
 		list.head = newNode
 		return
@@ -44,11 +47,11 @@ func (list *LinkedList) Insert(data int) {
 	walk.next = newNode
 }
 
-func (list *LinkedList) Delete(data int) {
-	var prewalk *Node = nil
+func (list *LinkedList[T]) Delete(data T, equals NodeEquals[T]) {
+	var prewalk *Node[T] = nil
 	walk := list.head
 
-	for walk != nil && walk.data != data {
+	for walk != nil && !equals(walk.data, data) {
 		prewalk = walk
 		walk = walk.next
 	}
@@ -65,11 +68,12 @@ func (list *LinkedList) Delete(data int) {
 	prewalk.next = walk.next
 }
 
-func (list *LinkedList) Search(searchKey int) int {
+func (list *LinkedList[T]) Search(searchKey T, equals NodeEquals[T]) int {
 	walk := list.head
 	index := 0
 	for walk != nil {
-		if walk.data == searchKey {
+		// if walk.data == searchKey {
+		if equals(walk.data, searchKey) {
 			return index
 		}
 		index = index + 1
@@ -78,7 +82,7 @@ func (list *LinkedList) Search(searchKey int) int {
 	return -1
 }
 
-func (list *LinkedList) Length() int {
+func (list *LinkedList[T]) Length() int {
 	length := 0
 	walk := list.head
 	for walk != nil {
@@ -88,24 +92,24 @@ func (list *LinkedList) Length() int {
 	return length
 }
 
-func (list *LinkedList) Reverse() *LinkedList {
+func (list *LinkedList[T]) Reverse() *LinkedList[T] {
 	walk := list.head
-	var n *Node
+	var n *Node[T]
 	n = nil
 	for walk != nil {
-		newNode := &Node{data: walk.data, next: n}
+		newNode := &Node[T]{data: walk.data, next: n}
 		n = newNode
 		walk = walk.next
 	}
-	newList := NewLinkedList()
+	newList := NewLinkedList[T]()
 	newList.head = n
 	return newList
 }
 
-func (list *LinkedList) ReverseInplace() {
-	var curr *Node
-	var prev *Node
-	var temp *Node
+func (list *LinkedList[T]) ReverseInplace() {
+	var curr *Node[T]
+	var prev *Node[T]
+	var temp *Node[T]
 
 	curr = list.head
 	prev = nil
@@ -120,7 +124,7 @@ func (list *LinkedList) ReverseInplace() {
 	list.head = prev
 }
 
-func (list *LinkedList) HasCycle() bool {
+func (list *LinkedList[T]) HasCycle() bool {
 	if list.head == nil {
 		return false
 	}
