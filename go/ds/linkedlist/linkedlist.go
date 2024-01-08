@@ -142,3 +142,58 @@ func (list *LinkedList[T]) HasCycle() bool {
 
 	return false
 }
+
+func (list *LinkedList[T]) ForEach(callback func(T, int)) {
+	walk := list.head
+	index := 0
+	for walk != nil {
+		callback(walk.data, index)
+		walk = walk.next
+		index = index + 1
+	}
+}
+
+func (list *LinkedList[T]) Map(callback func(T, int) T) *LinkedList[T] {
+	newList := NewLinkedList[T]()
+	walk := list.head
+	var node *Node[T]
+	index := 0
+
+	for walk != nil {
+		newNode := &Node[T]{callback(walk.data, index), nil}
+		if newList.head == nil {
+			newList.head = newNode
+			node = newNode
+		} else {
+			node.next = newNode
+			node = node.next
+		}
+		walk = walk.next
+		index = index + 1
+	}
+
+	return newList
+}
+
+func (list *LinkedList[T]) Filter(callback func(T, int) bool) *LinkedList[T] {
+	newList := NewLinkedList[T]()
+	walk := list.head
+	var node *Node[T]
+	index := 0
+
+	for walk != nil {
+		canInsert := callback(walk.data, index)
+		if canInsert {
+			newNode := &Node[T]{walk.data, nil}
+			if newList.head == nil {
+				newList.head = newNode
+				node = newNode
+			} else {
+				node.next = newNode
+				node = node.next
+			}
+		}
+		walk = walk.next
+	}
+	return newList
+}
