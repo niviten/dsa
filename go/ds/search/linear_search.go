@@ -9,11 +9,11 @@ func LinearSearch[T comparable](haystack []T, needle T) int {
     return -1
 }
 
-type SearchEquals[T any] func(T, T) bool
+type Compare[T any] func(T, T) int
 func LinearSearchWithComparator[T any](haystack []T, needle T,
-        equals SearchEquals[T]) int {
+        compare Compare[T]) int {
     for idx, a := range haystack {
-        if equals(a, needle) {
+        if compare(a, needle) == 0 {
             return idx
         }
     }
