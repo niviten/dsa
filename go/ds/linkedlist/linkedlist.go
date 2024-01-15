@@ -11,6 +11,8 @@ type Node[T any] struct {
 
 type NodeEquals[T any] func(T, T) bool
 
+type MapCallback[T any, R any] func (T, int) R
+
 func (node *Node[T]) Data() T {
 	return node.data
 }
@@ -196,4 +198,25 @@ func (list *LinkedList[T]) Filter(callback func(T, int) bool) *LinkedList[T] {
 		walk = walk.next
 	}
 	return newList
+}
+
+func LinkedListMap[T any, R any](list *LinkedList[T], callback MapCallback[T, R]) *LinkedList[R] {
+    result := NewLinkedList[R]()
+    var node *Node[R]
+    index := 0
+
+    for walk := list.head; walk != nil; {
+        mappedValue := callback(walk.data, index)
+        newNode := &Node[R]{ data: mappedValue, next: nil }
+        if result.head == nil {
+            result.head = newNode
+            node = newNode
+        } else {
+            node.next = newNode
+            node = node.next
+        }
+        index = index + 1
+        walk = walk.next
+    }
+    return result
 }
