@@ -13,6 +13,8 @@ type NodeEquals[T any] func(T, T) bool
 
 type MapCallback[T any, R any] func (T, int) R
 
+type ReduceCallback[T any, R any] func(R, T, int) R
+
 func (node *Node[T]) Data() T {
 	return node.data
 }
@@ -200,7 +202,7 @@ func (list *LinkedList[T]) Filter(callback func(T, int) bool) *LinkedList[T] {
 	return newList
 }
 
-func LinkedListMap[T any, R any](list *LinkedList[T], callback MapCallback[T, R]) *LinkedList[R] {
+func Map[T any, R any](list *LinkedList[T], callback MapCallback[T, R]) *LinkedList[R] {
     result := NewLinkedList[R]()
     var node *Node[R]
     index := 0
@@ -219,4 +221,15 @@ func LinkedListMap[T any, R any](list *LinkedList[T], callback MapCallback[T, R]
         walk = walk.next
     }
     return result
+}
+
+func Reduce[T any, R any](list *LinkedList[T], callback ReduceCallback[T, R],
+    value R) R {
+    index := 0
+    for walk := list.head; walk != nil; {
+        value = callback(value, walk.data, index)
+        walk = walk.next
+        index = index + 1
+    }
+    return value
 }
