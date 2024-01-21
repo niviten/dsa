@@ -11,7 +11,7 @@ type Node[T any] struct {
 
 type NodeEquals[T any] func(T, T) bool
 
-type MapCallback[T any, R any] func (T, int) R
+type MapCallback[T any, R any] func(T, int) R
 
 type ReduceCallback[T any, R any] func(R, T, int) R
 
@@ -203,33 +203,33 @@ func (list *LinkedList[T]) Filter(callback func(T, int) bool) *LinkedList[T] {
 }
 
 func Map[T any, R any](list *LinkedList[T], callback MapCallback[T, R]) *LinkedList[R] {
-    result := NewLinkedList[R]()
-    var node *Node[R]
-    index := 0
+	result := NewLinkedList[R]()
+	var node *Node[R]
+	index := 0
 
-    for walk := list.head; walk != nil; {
-        mappedValue := callback(walk.data, index)
-        newNode := &Node[R]{ data: mappedValue, next: nil }
-        if result.head == nil {
-            result.head = newNode
-            node = newNode
-        } else {
-            node.next = newNode
-            node = node.next
-        }
-        index = index + 1
-        walk = walk.next
-    }
-    return result
+	for walk := list.head; walk != nil; {
+		mappedValue := callback(walk.data, index)
+		newNode := &Node[R]{data: mappedValue, next: nil}
+		if result.head == nil {
+			result.head = newNode
+			node = newNode
+		} else {
+			node.next = newNode
+			node = node.next
+		}
+		index = index + 1
+		walk = walk.next
+	}
+	return result
 }
 
 func Reduce[T any, R any](list *LinkedList[T], callback ReduceCallback[T, R],
-    value R) R {
-    index := 0
-    for walk := list.head; walk != nil; {
-        value = callback(value, walk.data, index)
-        walk = walk.next
-        index = index + 1
-    }
-    return value
+	value R) R {
+	index := 0
+	for walk := list.head; walk != nil; {
+		value = callback(value, walk.data, index)
+		walk = walk.next
+		index = index + 1
+	}
+	return value
 }
