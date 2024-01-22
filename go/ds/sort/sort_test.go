@@ -72,3 +72,15 @@ func TestBubbleSort(t *testing.T) {
 		})
 	}
 }
+
+func TestMergeSort(t *testing.T) {
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			MergeSort(testCase.input)
+			if !reflect.DeepEqual(testCase.input, testCase.expected) {
+				t.Errorf("MergeSort(%v) == %v, want %v",
+					testCase.input, testCase.input, testCase.expected)
+			}
+		})
+	}
+}
