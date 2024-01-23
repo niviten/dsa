@@ -1,35 +1,36 @@
 package queue
 
 import (
+	"errors"
 	"fmt"
 )
 
-type node struct {
-	data int
-	next *node
+type node[T any] struct {
+	data T
+	next *node[T]
 }
 
-type Queue struct {
-	front *node
-	rear  *node
+type Queue[T any] struct {
+	front *node[T]
+	rear  *node[T]
 }
 
-func NewQueue() *Queue {
-	return &Queue{nil, nil}
+func NewQueue[T any]() *Queue[T] {
+	return &Queue[T]{nil, nil}
 }
 
-func (q *Queue) Print() {
+func (q *Queue[T]) Print() {
 	fmt.Print("[")
 	walk := q.front
 	for walk != nil {
-		fmt.Printf("%d, ", walk.data)
+		fmt.Printf("%v, ", walk.data)
 		walk = walk.next
 	}
 	fmt.Println("]")
 }
 
-func (q *Queue) Enqueue(data int) {
-	newNode := &node{data, nil}
+func (q *Queue[T]) Enqueue(data T) {
+	newNode := &node[T]{data, nil}
 	if q.rear == nil {
 		q.front = newNode
 		q.rear = newNode
@@ -39,25 +40,25 @@ func (q *Queue) Enqueue(data int) {
 	q.rear = newNode
 }
 
-func (q *Queue) Dequeue() (int, bool) {
+func (q *Queue[T]) Dequeue() (T, error) {
 	if q.front == nil {
-		return 0, false
+		return *new(T), errors.New("Queue is empty")
 	}
 	data := q.front.data
 	q.front = q.front.next
 	if q.front == nil {
 		q.rear = nil
 	}
-	return data, true
+	return data, nil
 }
 
-func (q *Queue) Peek() (int, bool) {
+func (q *Queue[T]) Peek() (T, error) {
 	if q.front == nil {
-		return 0, false
+		return *new(T), errors.New("Queue is empty")
 	}
-	return q.front.data, true
+	return q.front.data, nil
 }
 
-func (q *Queue) IsEmpty() bool {
+func (q *Queue[T]) IsEmpty() bool {
 	return q.front == nil
 }
