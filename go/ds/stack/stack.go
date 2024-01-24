@@ -1,53 +1,54 @@
 package stack
 
 import (
+	"errors"
 	"fmt"
 )
 
-type node struct {
-	data int
-	next *node
+type node[T any] struct {
+	data T
+	next *node[T]
 }
 
-type Stack struct {
-	top *node
+type Stack[T any] struct {
+	top *node[T]
 }
 
-func NewStack() *Stack {
-	return &Stack{top: nil}
+func NewStack[T any]() *Stack[T] {
+	return &Stack[T]{top: nil}
 }
 
-func (s *Stack) Print() {
+func (s *Stack[T]) Print() {
 	walk := s.top
 	fmt.Print("[")
 	for walk != nil {
-		fmt.Printf("%d, ", walk.data)
+		fmt.Printf("%v, ", walk.data)
 		walk = walk.next
 	}
 	fmt.Println("]")
 }
 
-func (s *Stack) Push(data int) {
-	newNode := &node{data, s.top}
+func (s *Stack[T]) Push(data T) {
+	newNode := &node[T]{data, s.top}
 	s.top = newNode
 }
 
-func (s *Stack) Pop() (int, bool) {
+func (s *Stack[T]) Pop() (T, error) {
 	if s.top == nil {
-		return 0, false
+		return *new(T), errors.New("Stack underflow")
 	}
 	dataToReturn := s.top.data
 	s.top = s.top.next
-	return dataToReturn, true
+	return dataToReturn, nil
 }
 
-func (s *Stack) Peek() (int, bool) {
+func (s *Stack[T]) Peek() (T, error) {
 	if s.top == nil {
-		return 0, false
+		return *new(T), errors.New("Stack underflow")
 	}
-	return s.top.data, true
+	return s.top.data, nil
 }
 
-func (s *Stack) IsEmpty() bool {
+func (s *Stack[T]) IsEmpty() bool {
 	return s.top == nil
 }
