@@ -84,3 +84,15 @@ func TestMergeSort(t *testing.T) {
 		})
 	}
 }
+
+func TestQuickSort(t *testing.T) {
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			QuickSort(testCase.input)
+			if !reflect.DeepEqual(testCase.input, testCase.expected) {
+				t.Errorf("QuickSort(%v) == %v, want %v",
+					testCase.input, testCase.input, testCase.expected)
+			}
+		})
+	}
+}
