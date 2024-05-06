@@ -111,15 +111,11 @@ func (list *LinkedList[T]) Reverse() *LinkedList[T] {
 }
 
 func (list *LinkedList[T]) ReverseInplace() {
-	var curr *Node[T]
-	var prev *Node[T]
-	var temp *Node[T]
-
-	curr = list.head
-	prev = nil
+	curr := list.head
+	var prev *Node[T] = nil
 
 	for curr != nil {
-		temp = curr.next
+		temp := curr.next
 		curr.next = prev
 		prev = curr
 		curr = temp
@@ -202,7 +198,9 @@ func (list *LinkedList[T]) Filter(callback func(T, int) bool) *LinkedList[T] {
 	return newList
 }
 
-func Map[T any, R any](list *LinkedList[T], callback MapCallback[T, R]) *LinkedList[R] {
+func Map[T any, R any](
+	list *LinkedList[T], callback MapCallback[T, R],
+) *LinkedList[R] {
 	result := NewLinkedList[R]()
 	var node *Node[R]
 	index := 0
