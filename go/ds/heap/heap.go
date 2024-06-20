@@ -46,6 +46,41 @@ func (h *Heap) Insert(item int) {
 	}
 }
 
+func (h *Heap) Extract() (int, bool) {
+	if h.size <= 0 {
+		return 0, false
+	}
+	rootElement := h.arr[0]
+
+	h.arr[0] = h.arr[h.size-1]
+	h.size = h.size - 1
+
+	idx := 0
+
+	for {
+		leftChildIdx := leftChild(idx)
+		rightChildIdx := rightChild(idx)
+		largest := idx
+
+		if leftChildIdx < h.size && h.arr[leftChildIdx] > h.arr[largest] {
+			largest = leftChildIdx
+		}
+
+		if rightChildIdx < h.size && h.arr[rightChildIdx] > h.arr[largest] {
+			largest = rightChildIdx
+		}
+
+		if largest == idx {
+			break
+		}
+
+		h.arr[idx], h.arr[largest] = h.arr[largest], h.arr[idx]
+		idx = largest
+	}
+
+	return rootElement, true
+}
+
 func parent(index int) int {
 	return (index - 1) / 2
 }
